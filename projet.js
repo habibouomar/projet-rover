@@ -1,6 +1,5 @@
 var prompt = require("prompt");
 
-
 var grid = [
 	[" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
 	[" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
@@ -71,25 +70,57 @@ function moveFoward(rover){
     // console.log(positionX);
     // console.log(positionY);
 
-    if(rover.direction === "E" && positionX <= 9) {
+    if(rover.direction === "N" && positionY !== 0) {
+        rover.y -= 1;
+        // console.log(`moveForward run ===> Current rover position is x:${positionX} y:${positionY}`);
+    } 
+    else if(rover.direction === "E" && positionX < 9) {
         rover.x += 1;
         // console.log(`moveForward run ===> Current rover position is x:${positionX} y:${positionY}`);
     }
-    else if(rover.direction === "S" && positionY <= 9) {
+    else if(rover.direction === "S" && positionY < 9) {
         rover.y += 1;
         // console.log(`moveForward run ===> Current rover position is x:${positionX} y:${positionY}`);
     }
-    else if(rover.direction === "W" && positionX <= 9) {
+    else if(rover.direction === "W" && positionX !== 0) {
         rover.x -= 1;
         // console.log(`moveForward run ===> Current rover position is x:${positionX} y:${positionY}`);
     }
-    else if(rover.direction === "N" && positionY <= 9) {
-        rover.y -= 1;
-        // console.log(`moveForward run ===> Current rover position is x:${positionX} y:${positionY}`);
-    }
     
+    else{
+        console.log("the rover doesn't move because isn't in the grid");
+    }
+
        rover.travelLog.push(`coordonées précedente x:${positionX} y:${positionY} d:${rover.direction}`);
 }
+
+    function moveBackward(rover){
+
+        let positionX = rover.x;
+        let positionY = rover.y;
+    
+        if(rover.direction === "N" && positionY !== 0) {
+            rover.y-- ;
+        } 
+
+        else if(rover.direction === "E" && positionX !== 0) {
+            rover.x-- ;
+        }
+
+        else if(rover.direction === "S" && positionY !== 0) {
+            rover.y-- ;
+        }
+
+        else if(rover.direction === "W" && positionX !== 0) {
+            rover.x-- ;
+        }
+        
+        else{
+           console.log("the rover doesn't move because isn't in the grid");
+        }
+
+        rover.travelLog.push(`coordonées précedente x:${positionX} y:${positionY} d:${rover.direction}`);
+    }
 
 function pilotRover(string) {
 
@@ -97,42 +128,64 @@ function pilotRover(string) {
     //  console.table(splits);
 
         for (let i = 0; i < splits.length; i++){
-
             //  console.log(splits[i]);
 
             if(splits[i] === "l"){
-
                 turnLeft(rover);
-                 // rover.travelLog.push("left");
             }
         
             else if(splits[i] === "r"){
-        
                 turnRight(rover);
-                // rover.travelLog.push("right");
             }
         
             else if(splits[i] === "f"){
-        
                  moveFoward(rover); 
-                // rover.travelLog.push("foward");   
-            }       
-        } 
+            }   
 
-        console.log(rover);
+            else if(splits[i] === "b"){
+                 moveBackward(rover); 
+            } 
+            
+            else{
+                console.log("error commands / STOP ROVER");
+                console.log(rover);
+                return
+            }
+        } 
+        //  console.log(rover);
 }
 
 // pilotRover("lllffffff");
- console.log(rover);
-
+//  console.log(rover);
 prompt.start();
+ 
+grid[rover.y][rover.x] = rover.direction;
+console.table(grid);
 
-  prompt.get("commands", function (err, res) { // permet de paramétrer la question
+function display(){  prompt.get("commands", function (err, res) { // permet de paramétrer la question
 
     if (err) {
 		return onErr(err);
 	}
-    
-    pilotRover(res.commands);
 
-  });
+    pilotRover(res.commands);
+    grid = [
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
+    ];
+    grid[rover.y][rover.x] = rover.direction;
+    console.table(grid);
+    display();
+    });
+     
+}
+
+display();
